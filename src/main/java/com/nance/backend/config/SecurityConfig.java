@@ -6,9 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-// Importante para la consola H2
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest; 
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -16,26 +13,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf
-                // IMPORTANTE: Ignorar CSRF en la consola de H2 y en rutas públicas
-                .ignoringRequestMatchers(PathRequest.toH2Console()) 
-                .disable() 
-            )
+            // 1. CSRF: Solo lo deshabilitamos (ya no hace falta ignorar la consola H2)
+            .csrf(csrf -> csrf.disable()) 
+            
+            // 2. Rutas: Quitamos las referencias a H2
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/products").permitAll()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                // --- AQUÍ ESTABA EL FALTANTE ---
-                // Permitimos entrar a la consola H2
-                .requestMatchers(PathRequest.toH2Console()).permitAll() 
-                // Alternativa manual si PathRequest falla: .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-            // --- ESTO TAMBIÉN ES OBLIGATORIO PARA H2 ---
-            // Permite que la consola se muestre dentro de un frame (marco)
-            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+                .requestMatchers("/api/auth/**").permitAll() // Login/Registro
+                .requestMatchers("/api/products").permitAll() // Catálogo público
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Documentación
+                .requestMatchers("/api/admin/**").hasRole("ADMIN") // Solo admins
+                .anyRequest().authenticated() // El resto protegido
+            );
+            
+            // 3. Headers: Eliminamos la configuración de 'frameOptions' 
+            // porque MariaDB no tiene interfaz web embebida.
 
         return http.build();
     }
