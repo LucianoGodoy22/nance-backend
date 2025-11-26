@@ -1,31 +1,34 @@
 package com.nance.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data // Lombok genera automáticamente getters, setters, toString, etc.
-@Entity // Indica que esta clase es una tabla en la base de datos
+@Data 
+@Entity 
 @Table(name = "products")
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ID autoincremental (1, 2, 3...) como pediste
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
-    // Campos fusionados de tu lista y el JSON de ejemplo
-    private String name; // "Vestido softcore"
+
+    private String name;
     
-    @Column(length = 1000) // Permite descripciones largas
+    @Column(length = 1000) 
     private String description; 
     
     private Double price;
     private Integer stock;
     
-    private String category; // Cambiado de 'type' a 'category'
-    private String imageUrl; // URL de la imagen
+    private String category; 
+
+    @JsonProperty("image_url")
+    private String imageUrl; 
     
-    // Atributos adicionales que pediste
     private String color;
-    private String brand; // Marca
-    private String attribute; // Atributo extra
+    private String brand; 
+    private String attribute; 
 }

@@ -16,5 +16,5 @@ public class User {
     private String password; 
 
     @Enumerated(EnumType.STRING)
-    private Role role; // Ya reconoce 'Role' del otro archivo
+    private Role role; 
 }

@@ -2,8 +2,8 @@ package com.nance.backend.controller;
 
 import com.nance.backend.config.JwtUtil;
 import com.nance.backend.dto.LoginRequest;
-import com.nance.backend.dto.LoginResponse;
 import com.nance.backend.model.User;
+import com.nance.backend.model.Role; 
 import com.nance.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Permite que tu frontend se conecte sin problemas
 public class AuthController {
 
     @Autowired
@@ -24,37 +25,47 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // Herramienta para comparar contraseñas encriptadas
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        // 1. Buscamos al usuario por su correo
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
 
-        // 2. Verificación simple: ¿Existe el usuario? Y ¿La contraseña coincide?
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            
-            // passwordEncoder.matches verifica la contraseña plana (request) contra la encriptada (BD)
+            // Verificar contraseña
             if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 
-                // 3. ¡Coinciden! Generamos el token según pide la rúbrica 
                 String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
                 
-                // Devolvemos el token al frontend
-                return ResponseEntity.ok(new LoginResponse(token));
+                Map<String, Object> response = new HashMap<>();
+                response.put("token", token);
+                
+                response.put("name", user.getEmail()); 
+                
+                response.put("email", user.getEmail());
+                response.put("role", user.getRole().name());
+                
+                response.put("id", user.getId());
+
+                return ResponseEntity.ok(response);
             }
         }
-
-        // Si no coinciden o no existe, devolvemos error 401 (No autorizado)
         return ResponseEntity.status(401).body("Usuario o contraseña incorrectos");
     }
 
-    // Endpoint extra para crear un usuario de prueba (útil para que tengas con qué probar)
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        // Encriptamos la contraseña antes de guardarla (Seguridad básica obligatoria)
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest().body("El correo ya está registrado");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        
+        if (user.getRole() == null) {
+            user.setRole(Role.CLIENT); 
+        }
+
         return ResponseEntity.ok(userRepository.save(user));
     }
 }

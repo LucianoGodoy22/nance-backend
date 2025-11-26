@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "*") // Permite conexión desde tu frontend (importante para Source 45)
 @Tag(name = "Productos", description = "API para gestión de inventario") // Swagger
 public class ProductController {
 
@@ -28,7 +27,7 @@ public class ProductController {
 
     @Operation(summary = "Crear producto", description = "Solo administradores")
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')") // Solo Admin puede crear [cite: 59]
+    @PreAuthorize("hasRole('ADMIN')")
     public Product create(@RequestBody Product product) {
         return productService.saveProduct(product);
     }

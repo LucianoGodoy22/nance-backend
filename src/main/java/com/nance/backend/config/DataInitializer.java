@@ -22,13 +22,12 @@ public class DataInitializer {
             if (userRepository.findByEmail("admin@nance.cl").isEmpty()) {
                 User admin = new User();
                 admin.setEmail("admin@nance.cl");
-                admin.setPassword(passwordEncoder.encode("admin123")); // Contraseña encriptada
+                admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setRole(Role.ADMIN);
                 userRepository.save(admin);
                 System.out.println("Usuario ADMIN creado: admin@nance.cl / admin123");
             }
 
-            // Crear CLIENTE si no existe
             if (userRepository.findByEmail("cliente@nance.cl").isEmpty()) {
                 User client = new User();
                 client.setEmail("cliente@nance.cl");
