@@ -175,19 +175,5 @@ src/
 ```bash
 ./mvnw test
 ```
-
 ---
-
-## 📄 License
-
-This project is proprietary software developed for the Nance platform. All rights reserved.
-
----
-
-## 🤝 Contributing
-
-Internal contributions are welcome. Please open an issue or pull request following the project's branching conventions.
-
----
-
 *Built with ❤️ using Spring Boot*
