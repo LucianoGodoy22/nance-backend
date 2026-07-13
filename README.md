@@ -1,93 +1,112 @@
-# Nance's Backend
+# Backend de Nance
 
-> **RESTful API** for inventory management and e-commerce, built with Spring Boot 3, JWT authentication, and MySQL. Designed to power the Nance platform with role-based access control and a clean, documented API surface.
-
----
-
-
-## ✨ Features
-
-- 🔐 **JWT Authentication** — Stateless token-based auth with 10-hour expiry
-- 👥 **Role-Based Access Control** — `ADMIN` and `CLIENT` roles with method-level security
-- 📦 **Product Management** — Full CRUD for product catalog (name, price, stock, category, brand, color, image)
-- 📄 **Swagger / OpenAPI** — Interactive API docs at `/swagger-ui.html`
-- 🌐 **CORS Configured** — Ready for local frontend development on ports `3000`, `5173`, `8081`
-- 🛡️ **BCrypt Password Encoding** — Industry-standard password hashing
-- 🚀 **Data Initializer** — Auto-seeds default `ADMIN` and `CLIENT` users on startup
-- 🗄️ **MySQL on AWS EC2** — Production-ready datasource with Hibernate auto-DDL
+> **API REST** para la gestión de inventario y comercio electrónico, desarrollada con Spring Boot 3, autenticación JWT y MySQL. Concebida para dar soporte a la plataforma Nance mediante control de acceso basado en roles y una interfaz de API clara y documentada.
 
 ---
 
-## 🛠️ Tech Stack
+## Índice
 
-| Layer | Technology |
+- [Descripción general](#descripción-general)
+- [Funcionalidades](#funcionalidades)
+- [Pila tecnológica](#pila-tecnológica)
+- [Puesta en marcha](#puesta-en-marcha)
+- [Referencia de la API](#referencia-de-la-api)
+- [Documentación interactiva](#documentación-interactiva)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Consideraciones de seguridad](#consideraciones-de-seguridad)
+- [Ejecución de pruebas](#ejecución-de-pruebas)
+
+---
+
+## Descripción general
+
+Este backend expone, mediante una API REST construida con Spring Boot, la lógica de negocio de la plataforma Nance: autenticación de usuarios, control de acceso por roles y administración del catálogo de productos. La persistencia se apoya en MySQL a través de Spring Data JPA, y la documentación de la API se genera de forma automática con SpringDoc OpenAPI.
+
+---
+
+## Funcionalidades
+
+- **Autenticación JWT**: mecanismo sin estado basado en *tokens*, con una vigencia de diez horas.
+- **Control de acceso basado en roles**: roles `ADMIN` y `CLIENT`, con seguridad aplicada a nivel de método.
+- **Gestión de productos**: operaciones CRUD completas sobre el catálogo (nombre, precio, existencias, categoría, marca, color e imagen).
+- **Documentación interactiva (Swagger/OpenAPI)**: disponible en `/swagger-ui.html`.
+- **CORS configurado**: preparado para el desarrollo local del frontend en los puertos `3000`, `5173` y `8081`.
+- **Codificación de contraseñas mediante BCrypt**: función *hash* de referencia en la industria para su protección.
+- **Inicializador de datos**: puebla automáticamente la base de datos con los usuarios `ADMIN` y `CLIENT` predeterminados al iniciar la aplicación.
+- **MySQL en AWS EC2**: fuente de datos lista para producción, con generación automática del esquema (DDL) mediante Hibernate.
+
+---
+
+## Pila tecnológica
+
+| Capa | Tecnología |
 |---|---|
-| Language | Java 17 |
-| Framework | Spring Boot 3.4 |
-| Security | Spring Security + JWT (jjwt 0.11.5) |
-| Persistence | Spring Data JPA / Hibernate |
-| Database | MySQL 8 (AWS EC2) / H2 (dev, optional) |
-| Documentation | SpringDoc OpenAPI 2.2 (Swagger UI) |
-| Build Tool | Apache Maven 3.9 |
-| Utilities | Lombok, Bean Validation |
+| Lenguaje | Java 17 |
+| Marco de trabajo | Spring Boot 3.4 |
+| Seguridad | Spring Security + JWT (jjwt 0.11.5) |
+| Persistencia | Spring Data JPA / Hibernate |
+| Base de datos | MySQL 8 (AWS EC2) / H2 (entorno de desarrollo, opcional) |
+| Documentación | SpringDoc OpenAPI 2.2 (interfaz Swagger) |
+| Herramienta de compilación | Apache Maven 3.9 |
+| Utilidades | Lombok, Bean Validation |
 
 ---
 
-## 🚀 Getting Started
+## Puesta en marcha
 
-### Prerequisites
+### Requisitos previos
 
-- Java 17+
-- Maven 3.9+ (or use the included `./mvnw` wrapper)
-- MySQL 8 instance (local or remote)
+- Java 17 o una versión posterior
+- Maven 3.9 o superior (o bien, el envoltorio `./mvnw` incluido en el proyecto)
+- Una instancia de MySQL 8 (local o remota)
 
-### 1. Clone the repository
+### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/your-org/nance-backend.git
+git clone https://github.com/su-organizacion/nance-backend.git
 cd nance-backend
 ```
 
-### 2. Configure the database
+### 2. Configurar la base de datos
 
-Edit `src/main/resources/application.properties`:
+Editar el archivo `src/main/resources/application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:mysql://<HOST>:3306/nance_db
-spring.datasource.username=<YOUR_DB_USER>
-spring.datasource.password=<YOUR_DB_PASSWORD>
+spring.datasource.username=<SU_USUARIO_DE_BASE_DE_DATOS>
+spring.datasource.password=<SU_CONTRASEÑA>
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-> **Tip:** For local development, you can switch to the embedded H2 database by uncommenting the H2 properties and commenting out the MySQL block.
+> **Sugerencia:** para el desarrollo local, es posible emplear la base de datos H2 embebida descomentando sus propiedades y comentando el bloque correspondiente a MySQL.
 
-### 3. Run the application
+### 3. Ejecutar la aplicación
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-The server starts at `http://localhost:8080`.
+El servidor quedará disponible en `http://localhost:8080`.
 
-### 4. Default users (auto-seeded)
+### 4. Usuarios predeterminados (creados automáticamente)
 
-| Role | Email | Password |
+| Rol | Correo electrónico | Contraseña |
 |---|---|---|
-| Admin | `admin@nance.cl` | `admin123` |
-| Client | `cliente@nance.cl` | `cliente123` |
+| Administrador | `admin@nance.cl` | `admin123` |
+| Cliente | `cliente@nance.cl` | `cliente123` |
 
 ---
 
-## 📡 API Reference
+## Referencia de la API
 
-### Authentication
+### Autenticación
 
-| Method | Endpoint | Auth | Description |
+| Método | *Endpoint* | Autenticación | Descripción |
 |---|---|---|---|
-| `POST` | `/api/auth/login` | Public | Authenticate and receive a JWT token |
-| `POST` | `/api/auth/register` | Public | Register a new user (defaults to `CLIENT` role) |
+| `POST` | `/api/auth/login` | Público | Autenticación del usuario y obtención de un token JWT |
+| `POST` | `/api/auth/register` | Público | Registro de un nuevo usuario (con rol `CLIENT` de manera predeterminada) |
 
-**Login request body:**
+**Cuerpo de la solicitud de inicio de sesión:**
 ```json
 {
   "email": "admin@nance.cl",
@@ -95,7 +114,7 @@ The server starts at `http://localhost:8080`.
 }
 ```
 
-**Login response:**
+**Respuesta del inicio de sesión:**
 ```json
 {
   "token": "<jwt_token>",
@@ -107,38 +126,38 @@ The server starts at `http://localhost:8080`.
 
 ---
 
-### Products
+### Productos
 
-| Method | Endpoint | Auth | Description |
+| Método | *Endpoint* | Autenticación | Descripción |
 |---|---|---|---|
-| `GET` | `/api/products` | Public | List all products |
-| `POST` | `/api/products` | `ADMIN` | Create a new product |
-| `PUT` | `/api/products/{id}` | `ADMIN` | Update a product by ID |
-| `DELETE` | `/api/products/{id}` | `ADMIN` | Delete a product by ID |
+| `GET` | `/api/products` | Público | Obtención del listado completo de productos |
+| `POST` | `/api/products` | `ADMIN` | Creación de un nuevo producto |
+| `PUT` | `/api/products/{id}` | `ADMIN` | Actualización de un producto según su identificador |
+| `DELETE` | `/api/products/{id}` | `ADMIN` | Eliminación de un producto según su identificador |
 
-**Product fields:** `id`, `name`, `description`, `price`, `stock`, `category`, `image_url`, `color`, `brand`, `attribute`
-
----
-
-### Using the JWT token
-
-Include the token in the `Authorization` header for all protected endpoints:
-
-```
-Authorization: Bearer <your_jwt_token>
-```
+**Campos del producto:** `id`, `name`, `description`, `price`, `stock`, `category`, `image_url`, `color`, `brand` y `attribute`.
 
 ---
 
-## 📖 Interactive Documentation
+### Uso del token JWT
 
-Once the application is running, visit:
+Para acceder a los *endpoints* protegidos, el token debe incluirse en la cabecera `Authorization`:
+
+```
+Authorization: Bearer <su_token_jwt>
+```
+
+---
+
+## Documentación interactiva
+
+Una vez que la aplicación esté en ejecución, puede accederse a través de:
 
 ```
 http://localhost:8080/swagger-ui/index.html
 ```
 
-Full OpenAPI spec available at:
+La especificación completa de OpenAPI está disponible en:
 
 ```
 http://localhost:8080/v3/api-docs
@@ -146,34 +165,36 @@ http://localhost:8080/v3/api-docs
 
 ---
 
-## 🗂️ Project Structure
+## Estructura del proyecto
 
 ```
 src/
 └── main/
     └── java/com/nance/backend/
-        ├── config/           # Security, CORS, JWT filter, data initializer
-        ├── controller/       # REST controllers (Auth, Product)
-        ├── dto/              # Request/Response DTOs
-        ├── model/            # JPA entities (User, Product, Role)
-        ├── repository/       # Spring Data JPA repositories
-        └── service/          # Business logic layer
+        ├── config/           # Seguridad, CORS, filtro JWT e inicializador de datos
+        ├── controller/       # Controladores REST (autenticación y productos)
+        ├── dto/              # DTO de solicitud y de respuesta
+        ├── model/            # Entidades JPA (usuario, producto y rol)
+        ├── repository/       # Repositorios de Spring Data JPA
+        └── service/          # Capa de lógica de negocio
 ```
 
 ---
 
-## 🔒 Security Notes
+## Consideraciones de seguridad
 
-- The JWT secret key is currently hardcoded in `JwtUtil.java`. For production, externalize it via environment variables or a secrets manager.
-- Database credentials in `application.properties` should be injected via environment variables in production deployments.
-- Tokens expire after **10 hours** by default.
+- La clave secreta empleada para firmar los tokens JWT se encuentra actualmente codificada de forma fija en `JwtUtil.java`. Para un entorno de producción, se recomienda externalizarla mediante variables de entorno o un gestor de secretos.
+- Las credenciales de la base de datos declaradas en `application.properties` deberían inyectarse mediante variables de entorno en los despliegues de producción.
+- De manera predeterminada, los tokens expiran a las diez horas.
 
 ---
 
-## 🧪 Running Tests
+## Ejecución de pruebas
 
 ```bash
 ./mvnw test
 ```
+
 ---
-*Built with ❤️ using Spring Boot*
+
+<p align="center">Desarrollado con Spring Boot</p>
